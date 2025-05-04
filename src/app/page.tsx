@@ -3,6 +3,34 @@ import { useState, useEffect } from 'react';
 import { Sun, Moon, MessageSquare, Trophy, CheckCircle, Plus, X, Heart, ChevronDown, ChevronUp } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
+type Comment = {
+  id: number;
+  user: string;
+  text: string;
+  likes: number;
+  time: string;
+};
+
+type Milestone = {
+  id: number;
+  title: string;
+  completed: boolean;
+};
+
+type Goal = {
+  id: number;
+  title: string;
+  description: string;
+  progress: number;
+  dueDate: string;
+  owner: string;
+  team: string;
+  comments: Comment[];
+  milestones: Milestone[];
+  color: string;
+};
+
+
 
 // Demo data
 const initialGoals = [
@@ -73,8 +101,8 @@ export default function GoalTracker() {
   const [darkMode, setDarkMode] = useState(false);
   const [goals, setGoals] = useState(initialGoals);
   const [newComment, setNewComment] = useState('');
-  const [activeCommentGoalId, setActiveCommentGoalId] = useState(null);
-  const [expandedGoalId, setExpandedGoalId] = useState(null);
+  const [activeCommentGoalId, setActiveCommentGoalId] = useState<number | null>(null);
+  const [expandedGoalId, setExpandedGoalId] = useState<number | null>(null);
   const [showAddGoal, setShowAddGoal] = useState(false);
   const [newGoal, setNewGoal] = useState({
     title: '',
@@ -94,7 +122,7 @@ export default function GoalTracker() {
   }, [darkMode]);
 
   // Toggle milestone completion
-  const toggleMilestone = (goalId, milestoneId) => {
+  const toggleMilestone = (goalId:number, milestoneId:number) => {
     setGoals(goals.map(goal => {
       if (goal.id === goalId) {
         const updatedMilestones = goal.milestones.map(milestone => {
@@ -119,7 +147,7 @@ export default function GoalTracker() {
   };
 
   // Add a new comment
-  const addComment = (goalId) => {
+  const addComment = (goalId:number) => {
     if (!newComment.trim()) return;
     
     setGoals(goals.map(goal => {
@@ -146,7 +174,7 @@ export default function GoalTracker() {
   };
 
   // Like a comment
-  const likeComment = (goalId, commentId) => {
+  const likeComment = (goalId:number, commentId:number) => {
     setGoals(goals.map(goal => {
       if (goal.id === goalId) {
         return {
@@ -200,7 +228,7 @@ export default function GoalTracker() {
   };
 
   // Toggle goal expansion
-  const toggleGoalExpansion = (goalId) => {
+  const toggleGoalExpansion = (goalId:number) => {
     setExpandedGoalId(expandedGoalId === goalId ? null : goalId);
   };
 
@@ -372,7 +400,7 @@ export default function GoalTracker() {
                             onChange={(e) => setNewComment(e.target.value)}
                             className={`w-full p-2 rounded-lg text-sm ${darkMode ? 'bg-gray-700 text-white' : 'bg-gray-100 text-gray-900'} focus:ring-2 focus:ring-${goal.color.split('-')[1]}-500 focus:outline-none`}
                             placeholder="Write a comment..."
-                            rows="2"
+                            rows={2}
                           />
                           <div className="flex justify-end mt-2 space-x-2">
                             <button
@@ -446,7 +474,7 @@ export default function GoalTracker() {
                     onChange={(e) => setNewGoal({...newGoal, description: e.target.value})}
                     className={`w-full p-2 rounded-lg text-gray-900 border ${darkMode ? 'bg-gray-700 border-gray-600 text-white' : 'bg-white border-gray-300'} focus:ring-2 focus:ring-purple-500 focus:outline-none`}
                     placeholder="Describe your goal"
-                    rows="3"
+                    rows={3}
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-4">
